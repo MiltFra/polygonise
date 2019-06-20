@@ -42,6 +42,29 @@ func GetNext(img *image.RGBA, f Filter, step int) ([]int, *image.RGBA) {
 	return res, img
 }
 
+// Flatten removes every corner from a given polygon that is exactly on
+// the line of the two adjacent corners.
+func Flatten(p []int) []int {
+	newP := make([]int, 0, len(p))
+	var r float64
+	var x, y, pX, pY, nX, nY int
+	l := len(p)
+	for i := 2; i < l+2; i += 2 {
+		x, y = p[i%l], p[(i+1)%l]
+		pX, pY = p[(i-2)%l], p[(i-1)%l]
+		nX, nY = p[(i+2)%l], p[(i+3)%l]
+		if x == pX && x == nX && ((y < pY) != (y < nY)) {
+			continue
+		}
+		r = float64(nX-pX) / float64(x-pX)
+		if int(r*float64(y-pY)) == nY-pY {
+			continue
+		}
+		newP = append(newP, x, y)
+	}
+	return newP
+}
+
 // copyImg creates a new RGBA image identical to the argument and returns
 // a pointer to the location.
 func copyImg(img *image.RGBA) *image.RGBA {
