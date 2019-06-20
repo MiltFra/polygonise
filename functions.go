@@ -99,7 +99,6 @@ func nextPolygon(img *image.RGBA, f Filter, step int) []int {
 	p := make([]int, 0)
 	x, y := startX, startY
 	dir := 0
-	var duplicate bool
 	for {
 		// in every step we progress a certain amount of pixels
 		// until there's a duplicate
@@ -107,19 +106,13 @@ func nextPolygon(img *image.RGBA, f Filter, step int) []int {
 			x, y, dir = nextPixel(img, f, x, y, dir)
 			for i := 0; i < len(p); i += 2 {
 				if x == p[i] && y == p[i+1] {
-					duplicate = true
-					break
+					return p
 				}
 			}
-		}
-		// if we found a duplicate, we're done
-		if duplicate {
-			break
 		}
 		// add the pixels to the polygon
 		p = append(p, x, y)
 	}
-	return p
 }
 
 var neighs = [][2]int{{-1, -1}, {0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}}
