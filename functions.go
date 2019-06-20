@@ -120,7 +120,7 @@ var neighs = [][2]int{{-1, -1}, {0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1
 // nextPixel returns a pixel and the direction the last pixel is in. It traverses the edge
 // of a filtered polygon in an image in clockwise order.
 func nextPixel(img *image.RGBA, f Filter, x, y, dir int) (newX, newY, newDir int) {
-	seenFalse := true
+	seenFalse := false
 	for i := 0; i < 8; i++ {
 		newX, newY = x+neighs[(i+dir)%8][0], y+neighs[(i+dir)%8][1]
 		if !seenFalse && !getValue(img, f, newX, newY) {
@@ -138,7 +138,7 @@ func nextPixel(img *image.RGBA, f Filter, x, y, dir int) (newX, newY, newDir int
 // bounds and the filter returns true for the given pixel.
 func getValue(img *image.RGBA, f Filter, x, y int) bool {
 	size := img.Bounds().Size()
-	if x < 0 || x > size.X || y < 0 || y < size.Y {
+	if x < 0 || x > size.X || y < 0 || y > size.Y {
 		return false
 	}
 	return f.Filter(img.RGBAAt(x, y))
