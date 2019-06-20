@@ -184,18 +184,6 @@ func (s *stack) Extend() {
 	s.data = newData
 }
 
-// ToRGBA converts an image object to RGBA.
-func ToRGBA(img image.Image) *image.RGBA {
-	size := img.Bounds().Size()
-	newImg := image.NewRGBA(img.Bounds())
-	for x := 0; x < size.X; x++ {
-		for y := 0; y < size.Y; y++ {
-			newImg.Set(x, y, img.At(x, y))
-		}
-	}
-	return newImg
-}
-
 // ApplyFilter returns a new image object where every pixel is
 // replaced either with the filters true value or it's false value
 // depending on the original pixels value.
