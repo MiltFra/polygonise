@@ -53,9 +53,12 @@ func NewGreyFilter(threshold uint8, inverted bool) (Filter, error) {
 	}
 	return NewFilter(
 		func(c color.RGBA) bool {
+			if inverted {
+				return uint32(c.B)+uint32(c.R)+uint32(c.G) < 3*uint32(threshold)
+			}
 			return uint32(c.B)+uint32(c.R)+uint32(c.G) > 3*uint32(threshold)
 		},
-		tV, fV,
+		fV, tV,
 	), nil
 }
 
@@ -74,9 +77,12 @@ func NewBlueFilter(threshold uint8, inverted bool) (Filter, error) {
 	}
 	return NewFilter(
 		func(c color.RGBA) bool {
+			if inverted {
+				return c.B < threshold
+			}
 			return c.B > threshold
 		},
-		tV, fV,
+		fV, tV,
 	), nil
 }
 
@@ -95,9 +101,12 @@ func NewRedFilter(threshold uint8, inverted bool) (Filter, error) {
 	}
 	return NewFilter(
 		func(c color.RGBA) bool {
+			if inverted {
+				return c.R < threshold
+			}
 			return c.R > threshold
 		},
-		tV, fV,
+		fV, tV,
 	), nil
 }
 
@@ -116,8 +125,11 @@ func NewGreenFilter(threshold uint8, inverted bool) (Filter, error) {
 	}
 	return NewFilter(
 		func(c color.RGBA) bool {
+			if inverted {
+				return c.G < threshold
+			}
 			return c.G > threshold
 		},
-		tV, fV,
+		fV, tV,
 	), nil
 }
