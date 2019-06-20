@@ -3,8 +3,9 @@ package polygonize
 import (
 	"image"
 
-	// We need jpeg procesing
+	// We need jpeg & png procesing
 	_ "image/jpeg"
+	_ "image/png"
 )
 
 func check(err error) {
