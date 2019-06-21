@@ -35,8 +35,10 @@ import "github.com/miltfra/polygonize"
 
 func main() {
     filter := polygonize.NewGreyFilter(100, false)
-    path := "path/to/image"
-    img := polygonize.FromFile(path)
+    img, err := polygonize.FromFile("path/to/image")
+    if err != nil {
+        panic(err)
+    }
     polygons := polygonize.Get(img, filter, 10)
     // Do something with polygons ...
 }
