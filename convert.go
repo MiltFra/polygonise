@@ -1,10 +1,13 @@
 package polygonize
 
 import (
+	"errors"
+	"fmt"
 	"image"
-	// We need jpeg and png processing to read files from the drive
-	_ "image/jpeg"
-	_ "image/png"
+	"path/filepath"
+
+	"image/jpeg"
+	"image/png"
 	"os"
 )
 
@@ -27,12 +30,40 @@ func ToRGBA(img image.Image) *image.RGBA {
 // then be used with this libarary.
 func FromFile(path string) (*image.RGBA, error) {
 	f, err := os.Open(path)
+	defer f.Close()
 	if err != nil {
-		return nil, err
+		return nil, errors.New("Failed to open the given file: " + err.Error())
 	}
 	src, _, err := image.Decode(f)
 	if err != nil {
-		return nil, err
+		return nil, errors.New("Failed to decode the given image: " + err.Error())
 	}
 	return ToRGBA(src), nil
+}
+
+// ToFile inverts the FromFile function. That is, it saves a given image.RGBA
+// object to the disk into a given path.
+func ToFile(path string, img *image.RGBA) error {
+	f, err := os.Create(path)
+	defer f.Close()
+	if err != nil {
+		return errors.New("Failed to write to the given file: " + err.Error())
+	}
+	switch filepath.Ext(path) {
+	case ".png":
+		err = png.Encode(f, img)
+		if err != nil {
+			return errors.New("Failed to encode png to file: " + err.Error())
+		}
+		return nil
+	case ".jpg", ".jpeg":
+		err = jpeg.Encode(f, img, nil)
+		if err != nil {
+			return errors.New("Failed to encode jpeg to file: " + err.Error())
+		}
+		return nil
+	default:
+		fmt.Println(filepath.Ext(path))
+		return errors.New("This filetype is not supported")
+	}
 }
