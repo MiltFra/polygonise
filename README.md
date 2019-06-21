@@ -1,6 +1,6 @@
 # polygonize
 
-<a href="https://codeclimate.com/github/MiltFra/polygonize/maintainability"><img src="https://api.codeclimate.com/v1/badges/b5e87322cfd976be47c5/maintainability" /></a>
+[![Build Status](https://travis-ci.org/MiltFra/polygonize.svg?branch=master)](https://travis-ci.org/MiltFra/polygonize) <a href="https://codeclimate.com/github/MiltFra/polygonize/maintainability"><img src="https://api.codeclimate.com/v1/badges/b5e87322cfd976be47c5/maintainability" /></a>
 
 A library to convert images into a set of polygons based on a binary filter.
 
