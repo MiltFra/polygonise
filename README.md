@@ -17,7 +17,7 @@ import "github.com/miltfra/polygonize"
 // ...
 ```
 
-## Usage
+## Basic Usage
 
 A polygon is a slice of integers. In each slice there's an even number of integers because they are listed as `x0, y0, x1, y1, ..., xn, yn`.
 
@@ -41,6 +41,24 @@ func main() {
 
 To remove corners of polygons that do not add to the shape because they form a
 straight line with their neighbours you can use `polygonize.Flatten()`.
+
+## Filters
+
+The entire package is based around the idea of filters. The interface looks as follows (see `filters.go` for further documentation):
+
+```go
+type Filter interface {
+	Filter(color.RGBA) bool
+	FalseValue() color.RGBA
+	TrueValue() color.RGBA
+}
+```
+
+As you can see, a filter needs to be able to decide wether any RGBA color is `true` or `false`. Further, the algorithms depends on colors which are known to return `true` and `false`. If you want to create your own filter you only have to satisfy this interface.
+
+To make things a bit easier there are 4 different default filter types implemented.
+
+You can access them through `NewGreyFilter`, `NewRedFilter`, `NewGreenFilter` and `NewBlueFilter`.
 
 ## Disclaimer
 
