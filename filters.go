@@ -45,7 +45,6 @@ func NewGreyFilter(threshold uint8, inverted bool) (Filter, error) {
 	fV := color.RGBA{0, 0, 0, 255}
 	tV := color.RGBA{255, 255, 255, 255}
 	if inverted {
-		threshold = 255 - threshold
 		tV, fV = fV, tV
 	}
 	if threshold == 255 {
@@ -69,21 +68,9 @@ func NewBlueFilter(threshold uint8, inverted bool) (Filter, error) {
 	fV := color.RGBA{0, 0, 0, 255}
 	tV := color.RGBA{0, 0, 255, 255}
 	if inverted {
-		threshold = 255 - threshold
 		tV, fV = fV, tV
 	}
-	if threshold == 255 {
-		return nil, errors.New("Threshold makes this a constant")
-	}
-	return NewFilter(
-		func(c color.RGBA) bool {
-			if inverted {
-				return c.B < threshold
-			}
-			return c.B > threshold
-		},
-		fV, tV,
-	), nil
+	return newColorFilter(2, threshold, inverted, tV, fV)
 }
 
 // NewRedFilter returns a new filter object that accepts any color
@@ -93,21 +80,9 @@ func NewRedFilter(threshold uint8, inverted bool) (Filter, error) {
 	fV := color.RGBA{0, 0, 0, 255}
 	tV := color.RGBA{255, 0, 0, 255}
 	if inverted {
-		threshold = 255 - threshold
 		tV, fV = fV, tV
 	}
-	if threshold == 255 {
-		return nil, errors.New("Threshold makes this a constant")
-	}
-	return NewFilter(
-		func(c color.RGBA) bool {
-			if inverted {
-				return c.R < threshold
-			}
-			return c.R > threshold
-		},
-		fV, tV,
-	), nil
+	return newColorFilter(0, threshold, inverted, tV, fV)
 }
 
 // NewGreenFilter returns a new filter object that accepts any color
@@ -117,19 +92,43 @@ func NewGreenFilter(threshold uint8, inverted bool) (Filter, error) {
 	fV := color.RGBA{0, 0, 0, 255}
 	tV := color.RGBA{0, 255, 0, 255}
 	if inverted {
-		threshold = 255 - threshold
 		tV, fV = fV, tV
 	}
+	return newColorFilter(1, threshold, inverted, tV, fV)
+}
+
+func newColorFilter(channel, threshold uint8, inverted bool, tV, fV color.RGBA) (Filter, error) {
 	if threshold == 255 {
 		return nil, errors.New("Threshold makes this a constant")
 	}
+	ff, err := newColorFilterFunction(channel, inverted, threshold)
+	if err != nil {
+		return nil, err
+	}
 	return NewFilter(
-		func(c color.RGBA) bool {
-			if inverted {
-				return c.G < threshold
-			}
-			return c.G > threshold
-		},
+		ff,
 		fV, tV,
 	), nil
+}
+
+func newColorFilterFunction(channel uint8, inverted bool, threshold uint8) (func(color.RGBA) bool, error) {
+	switch channel {
+	case 0:
+		if inverted {
+			return func(c color.RGBA) bool { return c.R < threshold }, nil
+		}
+		return func(c color.RGBA) bool { return c.R > threshold }, nil
+	case 1:
+		if inverted {
+			return func(c color.RGBA) bool { return c.G < threshold }, nil
+		}
+		return func(c color.RGBA) bool { return c.G > threshold }, nil
+	case 2:
+		if inverted {
+			return func(c color.RGBA) bool { return c.B < threshold }, nil
+		}
+		return func(c color.RGBA) bool { return c.B > threshold }, nil
+	default:
+		return nil, errors.New("The given channel does not exist")
+	}
 }
