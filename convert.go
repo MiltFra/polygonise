@@ -55,15 +55,16 @@ func ToFile(path string, img *image.RGBA) error {
 		if err != nil {
 			return errors.New("Failed to encode png to file: " + err.Error())
 		}
-		return nil
+		break
 	case ".jpg", ".jpeg":
 		err = jpeg.Encode(f, img, nil)
 		if err != nil {
 			return errors.New("Failed to encode jpeg to file: " + err.Error())
 		}
-		return nil
+		break
 	default:
 		fmt.Println(filepath.Ext(path))
 		return errors.New("This filetype is not supported")
 	}
+	return nil
 }
