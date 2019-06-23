@@ -20,6 +20,16 @@ import "github.com/miltfra/polygonize"
 // ...
 ```
 
+## Use cases
+
+Before we look at *how* you can use this, we need to figure out *when* you can use this. This package *does not* polygonize images to make them look fancy. Instead it allows you to generate polygons, that is ordered sets of points, from images.
+
+I've only ever had one use case but there are others I can think of:
+
+- generate unlimited input data for algorithms in 2D-terrain; as far as I know the algorithm manages to avoid overlapping polygons
+- convert 2D terrain into polygons; I don't see where you'd need this, but there's probably one person out there who's done exactly that... if you read this: Hello there.
+- get objects from heatmaps (e.g. infra red images); this is probably the most useful case with a connection to the real world... yet, I think the first one is more likely
+
 ## Basic Usage
 
 A polygon is a slice of integers. In each slice there's an even number of integers because they are listed as `x0, y0, x1, y1, ..., xn, yn`.
