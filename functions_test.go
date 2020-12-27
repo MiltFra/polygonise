@@ -1,4 +1,4 @@
-package polygonize
+package polygonise
 
 import (
 	"testing"
