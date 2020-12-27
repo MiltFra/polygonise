@@ -111,23 +111,28 @@ func newColorFilter(channel, threshold uint8, inverted bool, tV, fV color.RGBA) 
 	), nil
 }
 
+// compareFunction returns a comparator (< or >) as an anonymous function.
+// By default, it returns `val > threshold`.
+func compareFunction(inverted bool) func(uint8, uint8) bool {
+	if inverted {
+		return func(val uint8, threshold uint8) bool {
+			return val < threshold
+		}
+	}
+	return func(val uint8, threshold uint8) bool {
+		return val > threshold
+	}
+}
+
 func newColorFilterFunction(channel uint8, inverted bool, threshold uint8) (func(color.RGBA) bool, error) {
+	comp := compareFunction(inverted)
 	switch channel {
 	case 0:
-		if inverted {
-			return func(c color.RGBA) bool { return c.R < threshold }, nil
-		}
-		return func(c color.RGBA) bool { return c.R > threshold }, nil
+		return func(c color.RGBA) bool { return comp(c.R, threshold) }, nil
 	case 1:
-		if inverted {
-			return func(c color.RGBA) bool { return c.G < threshold }, nil
-		}
-		return func(c color.RGBA) bool { return c.G > threshold }, nil
+		return func(c color.RGBA) bool { return comp(c.G, threshold) }, nil
 	case 2:
-		if inverted {
-			return func(c color.RGBA) bool { return c.B < threshold }, nil
-		}
-		return func(c color.RGBA) bool { return c.B > threshold }, nil
+		return func(c color.RGBA) bool { return comp(c.B, threshold) }, nil
 	default:
 		return nil, errors.New("The given channel does not exist")
 	}
