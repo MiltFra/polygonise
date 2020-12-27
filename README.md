@@ -1,6 +1,6 @@
-# polygonize
+# polygonise
 
-[![Build Status](https://travis-ci.org/MiltFra/polygonize.svg?branch=master)](https://travis-ci.org/MiltFra/polygonize) <a href="https://codeclimate.com/github/MiltFra/polygonize/maintainability"><img src="https://api.codeclimate.com/v1/badges/b5e87322cfd976be47c5/maintainability" /></a>
+[![Build Status](https://travis-ci.org/MiltFra/polygonise.svg?branch=master)](https://travis-ci.org/MiltFra/polygonise) <a href="https://codeclimate.com/github/MiltFra/polygonise/maintainability"><img src="https://api.codeclimate.com/v1/badges/b5e87322cfd976be47c5/maintainability" /></a>
 
 A library to convert images into a set of polygons based on a binary filter.
 
@@ -8,21 +8,21 @@ A library to convert images into a set of polygons based on a binary filter.
 
 If you're familiar with Go, you should know how this works:
 ```
-$ go get -u github.com/miltfra/polygonize
+$ go get -u github.com/miltfra/polygonise
 ```
 
 Now you can import it in your file header:
 ```go
 package main
 
-import "github.com/miltfra/polygonize"
+import "github.com/miltfra/polygonise"
 
 // ...
 ```
 
 ## Use cases
 
-Before we look at *how* you can use this, we need to figure out *when* you can use this. This package *does not* polygonize images to make them look fancy. Instead it allows you to generate polygons, that is ordered sets of points, from images.
+Before we look at *how* you can use this, we need to figure out *when* you can use this. This package *does not* polygonise images to make them look fancy. Instead it allows you to generate polygons, that is ordered sets of points, from images.
 
 I've only ever had one use case but there are others I can think of:
 
@@ -34,28 +34,28 @@ I've only ever had one use case but there are others I can think of:
 
 A polygon is a slice of integers. In each slice there's an even number of integers because they are listed as `x0, y0, x1, y1, ..., xn, yn`.
 
-The package's essential function, `polygonize.Get`, returns a slice of polygons (`[][]int`).
+The package's essential function, `polygonise.Get`, returns a slice of polygons (`[][]int`).
 
 Let's say you want to read an arbitrary image and get the polygons of the areas that have an average color bigger than 100:
 
 ```go
 package main
 
-import "github.com/miltfra/polygonize"
+import "github.com/miltfra/polygonise"
 
 func main() {
-    filter := polygonize.NewGreyFilter(100, false)
-    img, err := polygonize.FromFile("path/to/image")
+    filter := polygonise.NewGreyFilter(100, false)
+    img, err := polygonise.FromFile("path/to/image")
     if err != nil {
         panic(err)
     }
-    polygons := polygonize.Get(img, filter, 10)
+    polygons := polygonise.Get(img, filter, 10)
     // Do something with polygons ...
 }
 ```
 
 To remove corners of polygons that do not add to the shape because they form a
-straight line with their neighbours you can use `polygonize.Flatten()`.
+straight line with their neighbours you can use `polygonise.Flatten()`.
 
 ## Filters
 
@@ -79,8 +79,8 @@ You can access them through `NewGreyFilter`, `NewRedFilter`, `NewGreenFilter` an
 
 Do not expect to get the exact polygons you are seeing on screen, unless:
 
-1. Your step size in `polygonize.Get` is `1`,
-2. you used `polygonize.Flatten` and
+1. Your step size in `polygonise.Get` is `1`,
+2. you used `polygonise.Flatten` and
 3. your polygon only has horizontal, vertical and 45 degree edges.
 
 The algorithm might not see edges at another angle as true lines, because in most cases they aren't. 
